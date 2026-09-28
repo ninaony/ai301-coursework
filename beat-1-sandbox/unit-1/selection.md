@@ -15,11 +15,7 @@ wrong label is not graded.
 
 **Issue link**
 
-https://github.com/codepath/pathreview-ai301-fa26-s3/issues/57This check was written to try to satisfy all the possible ways an issue description could beyond a single bounded scope. At first, my wording was more focused on the polish vs acknowledging that many files or elements could be mentioned despite all describing a singular issue. 
-
-Since I'm not sure on all the possible ways a scope could be unbounded, this may fail on issues like that. For example, issue-20 falls into this category because a spec not fully agreed upon doesn't imply disagreemnt. It could just be a neutral unspecified thing, but I think the wording "disagreement" means that my grader is looking for explicit conflict. 
-
-So the tradeoff is that my wording requires me to list out each possibility that could cause a fail, which requires me to be more exhaustive of what I list. 
+https://github.com/codepath/pathreview-ai301-fa26-s3/issues/57
 
 
 **Verdict output**
@@ -166,9 +162,12 @@ Pass condition: Fails only if one of these is true: (a) the issue is explicitly 
 This check was written to try to satisfy all the possible ways an issue description could beyond a single bounded scope. At first, my wording was more about the polish vs acknowledging that many files or elements could be mentioned despite all describing a singular issue, which is why I failed a lot at the beginning. But the Claude heldped me realize that it was much easier to describe what a failed look like
 because what's wrong into a smaller set of recognizable patterns. 
 
-The cost is that any pattern I fail to name defaults to a pass, not a fail. Thusm my gaps become false accepts rather than false rejects, which for a first-issue picker is the more expensive mistake to make. That means my pas condition list does require me to actually be more exhaustive. 
+The cost is that any pattern I fail to name defaults to a pass, not a fail. Thus, my gaps become false accepts rather than false rejects, which for a first-issue picker is the more expensive mistake to make. That means my pass condition list does require me to actually be more exhaustive. 
 
 For example, issue-20 fails currently because my rubric defines an undefined spec in the context of a disagreement, however in issue-20, it's more of a neutral thing. I think the wording "disagreement" means that my grader is looking for explicit conflict. I would be able to easily edit that in, but since I don't know all the common cases, I could run into some issues. 
+
+So the tradeoff is that my wording requires me to list out each possibility that could cause a fail, which requires me to be more exhaustive of what I list. 
+
 
 ---
 
@@ -183,13 +182,17 @@ This is also the basis for the claim comment you write in Unit 2.
 
 
 1. The issue's fit to your interests and to the time available.
+
 I was looking to do something related to ML, and so I really wanted a rag tagged issue, which issue has. It's also tagged as tier 1, which I think will be a good introduction issue for me since I've only ever cotributed to OSS in the context of the previous AI Codepath course. 
 
 2. What the verdict identified correctly, and what you weighed that the rubric could not.
+
 My rubric helped verify that the content was actually scoped and the tier-1 issue tag was actually accurate. The bug looks scoped, and the fact that a test case has already been written for it makes it easier for me to reproduce. My previous fix in AI201 had a similar shape , so I figured this would be good as my intro contribution.
 
 3. The anticipated difficulty in claiming it.
+
 I don't anticipate this to be very difficult at least to reproduce since there is an established test that's failing. I understand vaguely there's maybe some a measurement of similarity issue, but I'm not sure if it's LLM related or some regex rules. I also don't fully get the intended use case of this yet, but I have confidence I will figure it out as there's an example provided, so once I see the code, I'll become more familiar.
+
 ---
 
 Related paths: `eval-run.txt` in this directory; your skill's files in
