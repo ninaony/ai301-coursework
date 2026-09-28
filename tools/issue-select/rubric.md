@@ -40,7 +40,6 @@ will fail eval issues designed around that family.
 | One bounded issue | Information under Issue header and comment thread |  Fails only if one of these is true: (a) the issue is explicitly a checklist/tracking issue where items are meant to be split into separate issues or PRs, (b) the comment thread shows a live, unresolved design disagreement that no maintainer has settled, (c) a maintainer states outright that the fix requires core-internals/architecture changes, or (d) it is a pure usage/support question rather than a concrete change. Multiple examples, root causes, suggested approaches, or files touched do not by themselves fail this check as long as they all serve one described fix or outcome. | required |
 | No linked PRs | linked PRs:" with state per PR, plus any PRs mentioned in the Comments section | No PRs that are open in list , and no pattern of two or more abandoned attempts (closed unmerged PRs)| required |
 | Contribution policy | the "contribution policy" line under Repo facts | Does not say or strongly imply that they do not accept AI-generated code | required|
-s
 
 ## Verdict rule
 
