@@ -28,8 +28,6 @@ Cover what actually kills first contributions. The lecture named four
 families: the maintainer is alive, the repo is in use, the scope fits a
 newcomer, and nobody else is already on it. A rubric that ignores a family
 will fail eval issues designed around that family.
-
-prev one bounded issue description:Information describes an issue that doesn't require dependencies in order to fix. Multiple examples, possible causes, suggestions for potential fixes, or files to be changed are fine so as long they are all contributing to a single issue being fixed. 
 -->
 
 
@@ -37,13 +35,12 @@ prev one bounded issue description:Information describes an issue that doesn't r
 
 | Check | Evidence | Pass condition | Weight |
 |---|---|---|---|
-| Maintainer response latency | Reply times in maintainer first-response sample under Repo facts  | 2 out of 5 reply times are 7 days or less | required |
 | Last push by maintainer | "last push to any branch" under Repo facts | Within 90 days| required |
 | Release recency | the date of the "latest release" under Repo facts | Within the last 150 days | preferred |
-| One bounded issue | Information under Issue header | Presence acceptance criteria that describes one atomic issue (no dependencies, multiple sub-items) | required |
-| No asignees | "this issue: assignees:" under Repo facts |  | required |
+| One bounded issue | Information under Issue header and comment thread |  Fails only if one of these is true: (a) the issue is explicitly a checklist/tracking issue where items are meant to be split into separate issues or PRs, (b) the comment thread shows a live, unresolved design disagreement that no maintainer has settled, (c) a maintainer states outright that the fix requires core-internals/architecture changes, or (d) it is a pure usage/support question rather than a concrete change. Multiple examples, root causes, suggested approaches, or files touched do not by themselves fail this check as long as they all serve one described fix or outcome. | required |
+| No linked PRs | linked PRs:" with state per PR, plus any PRs mentioned in the Comments section | No PRs that are open in list , and no pattern of two or more abandoned attempts (closed unmerged PRs)| required |
 | Contribution policy | the "contribution policy" line under Repo facts | Does not say or strongly imply that they do not accept AI-generated code | required|
-
+s
 
 ## Verdict rule
 

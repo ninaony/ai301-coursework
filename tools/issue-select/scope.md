@@ -14,7 +14,7 @@ Two parts. Staff wrote the first; you write the second.
 
 Only issues in the course's Path Review repository are candidates:
 
-- Repo: `<ORG>/<PATH-REVIEW-REPO>` <!-- paste your section's repo from the Unit 1 Check-In page -->
+- Repo: `codepath/pathreview-ai301-fa26-s3` 
 
 Do not search, fetch, or grade issues from any other repository, however
 promising. The wider GitHub comes later in the course; for now the field
@@ -37,3 +37,4 @@ rubric accepts, never to change a verdict: fit cannot rescue an issue
 your rubric rejects, and cannot sink one it accepts. -->
 
 (Write a few sentences here.)
+I want to get better at understanding and coding backend and ML related features, so topics that help me focus on those areas of the stack are what I'm looking for. So, features that require me to really understand backend or ML principles are what I'm looking for. I'm focused on currently focused and thus prefere codebase in Python, but can also do Java-base software.
