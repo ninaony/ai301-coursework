@@ -15,7 +15,7 @@ wrong label is not graded.
 
 **Issue link**
 
-https://github.com/codepath/pathreview-ai301-fa26-s3/issues/57
+https://github.com/codepath/pathreview-ai301-fa26-s3/issues/59
 
 
 **Verdict output**
@@ -143,7 +143,7 @@ Golden Label: reject
 
 Reason: graded accept
 
-
+The reason issue 20 was graded accept because it didn't fall into any of the categories I listed. It would have most likely fallen under b where it states that an unresolved designn that hasn't been settled should be flagged as a reject. The reason it didn't may be because the word spec wasn't used in my description and/or there's no actual disagreement, just a neutral unspecified situation, the grader did not flag it. 
 
 **Check rationale**
 
@@ -165,9 +165,6 @@ because what's wrong into a smaller set of recognizable patterns.
 The cost is that any pattern I fail to name defaults to a pass, not a fail. Thus, my gaps become false accepts rather than false rejects, which for a first-issue picker is the more expensive mistake to make. That means my pass condition list does require me to actually be more exhaustive. 
 
 For example, issue-20 fails currently because my rubric defines an undefined spec in the context of a disagreement, however in issue-20, it's more of a neutral thing. I think the wording "disagreement" means that my grader is looking for explicit conflict. I would be able to easily edit that in, but since I don't know all the common cases, I could run into some issues. 
-
-So the tradeoff is that my wording requires me to list out each possibility that could cause a fail, which requires me to be more exhaustive of what I list. 
-
 
 ---
 

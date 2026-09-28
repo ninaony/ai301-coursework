@@ -36,5 +36,4 @@ you want to avoid. The skill uses this only to RANK the issues your
 rubric accepts, never to change a verdict: fit cannot rescue an issue
 your rubric rejects, and cannot sink one it accepts. -->
 
-(Write a few sentences here.)
 I want to get better at understanding and coding backend and ML related features, so topics that help me focus on those areas of the stack are what I'm looking for. So, features that require me to really understand backend or ML principles are what I'm looking for. I'm focused on currently focused and thus prefere codebase in Python, but can also do Java-base software.
