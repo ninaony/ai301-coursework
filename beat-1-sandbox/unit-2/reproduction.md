@@ -2,21 +2,10 @@
 
 Path: `beat-1-sandbox/unit-2/reproduction.md`
 
-Record of your claim and reproduction on the issue you chose in Unit 1, and of the
-evaluation runs that produced `eval-run.txt`. This file is graded at the path above; a copy
-kept anywhere else in the repository is not read.
-
-Complete every labelled field below. Each is graded on its own; content placed under the wrong
-label is not graded.
-
----
-
 ## Your identity upstream
 
 **GitHub username**
-
-[Your GitHub username, exactly as it appears on your profile — no `@`, no profile URL. Your
-comments upstream are identified by this name.]
+ninaony
 
 ---
 
@@ -24,46 +13,80 @@ comments upstream are identified by this name.]
 
 **Claim comment**
 
-[Link to the comment where you claimed the issue. Use the comment's own permalink, not the
-issue page on its own. **Then paste the text of that comment underneath the link** — the
-pasted text is what this field is graded on, so copy across what you actually posted.]
+
+Link: https://github.com/codepath/pathreview-ai301-fa26-s3/issues/59#issuecomment-5896828870
+
+Hi! I'd like to take on this issue: Faithfulness checker scores claims unsupported when the context uses different words #59.
+
+I’m writing a repro report with my environment, steps, and log, then I’ll attempt a fix. I’m a beginner contributor btw.
+
+
 
 **Reproduction comment**
 
-[Link to the comment where you posted your reproduction. It must record the environment
-(OS, relevant versions, code state), steps a stranger could follow, and what you observed.
-**Then paste the text of that comment underneath the link** — the pasted text is what this
-field is graded on, so copy across what you actually posted.]
+Link: https://github.com/codepath/pathreview-ai301-fa26-s3/issues/59#issuecomment-5899261476
+
+Repro report:
+
+Environment:
+macOS 26.6.2
+Python 3.13.0
+pytest 9.1.1
+
+Steps from a fresh clone:
+
+1. Clone repo
+2. Followed docs/SETUP.md steps exactly
+3. Reproduced issues:
+
+- Failed test
+
+Ran `pytest tests/unit/test_faithfulness_checker.py::TestFaithfulnessChecker::test_multiple_context_chunks --runxfail`
+
+Output was as expected ([log](references/reproduction_evidence.txt) attached with details): assert 0.0 > 0.5
+
+- Direct calls to is_supported()
+
+
+Ran `python3 -c "from rag.evaluator.faithfulness_checker import FaithfulnessChecker; print(FaithfulnessChecker._is_supported('Knows Python', 'The candidate knows Python'))"`
+
+Output was as expected ([screenshot](references/repro_evidence_2.png) attached with response): True (1.0)
+
+Ran `python3 -c "from rag.evaluator.faithfulness_checker import FaithfulnessChecker; print(FaithfulnessChecker._is_supported('Knows Python', 'python expert'))"`
+
+Output was as expected ([screenshot](references/repro_evidence_2.png) attached with response): False (0.0)
 
 ## Eval iterations
 
-Answer all four sections. Quote source text directly; paraphrase does not satisfy these
-fields.
-
 **Run history**
 
-[The agreement score of each run you did, in order. A single run is a complete answer if
-only one run occurred. **The last score in your list must match the agreement line in the
-`eval-run.txt` you committed** — that file is the record of your final run.]
+1. agreement: 15/20 scored items  (bar: 18/20: below the bar; category floor unmet: no match in disclosure)
+2. agreement: 20/20 scored items  (bar: 18/20: PASS)
+
 
 **Package analysis**
 
-[Pick one scored package (`pkg-01` through `pkg-20` — the four `calib-` packages are never
-scored). Name it by id, say what your rubric decided and what the gold label said, and
-explain why your rubric read it that way.]
+`pkg-3`
+
+Current - 
+Gold: accept  
+My rubric: accept   
+Match/reasoning: n/a 
+
+
+My rubric is reading it as an accept because while an AI contribution policy exists and there is no acknowledgement of this in the claim comment/repro check, it doesn't matter. The specific policy is that it needs to be human readable, which it is.
 
 **Check rationale**
 
-[Quote one check from the `rubric.md` you uploaded to `tools/repro-check/`, exactly as it reads now.
-Then say why it reads that way — what you revised to get there, or what you rejected in
-favour of it.]
+
+| comment body |  if the repo or comments state a policy that specifically demands an explicit statement acknowledging AI use (naming the tool/extent), and the contributor doesn't include one, fail. If no explicit-acknowledgement requirement exists, the check passes. | required |
+
+This check took me a couple tries to get because there are two levels to the disclosures. Previously, I was understanding as any mention of an AI policy warrants acknowledgement. What I needed to get clearer on, which `pkg-03` helped with was the fact on that a policy could exist but not necessarily necessitate an acknowledgement. Thus, there are some conditions where not acknowledging AI even though there is a policy, can still pass.
+
 
 **Trade-offs**
 
-[Every check gives something up. Any one of these is a complete answer: a package whose
-result it changes, a canary you re-ran with `--only`, a case you accept it will miss, or a
-stated reason nothing changed elsewhere. "Nothing changed, and here is how I know" earns
-the point in full when the reason follows.]
+The check gives up catching a human sounding AI comment. When a repo's policy asks for an explicit "I used AI" statement, the check just looks for that sentence as it's easy to verify, which is why pkg-20 grades reliably. When a policy just asks to "sound human," the check has to guess based on how the writing reads. I tried fixing that by telling the grader to assume every comment is AI-assisted no matter what, but that broke `pkg-03` because it wanted an explicit disclosure statement from a policy that never asked for one. So I left the softer check as is. Since I have the no AI isms check though, hopefully that'll be caught there.
 
 ---
 
