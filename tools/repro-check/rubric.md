@@ -43,7 +43,12 @@ packages designed around that family.
 
 | Check | Evidence | Pass condition | Weight |
 |---|---|---|---|
-|  |  |  |  |
+| Traceable proof | log, comment body | reproducible steps exists with version and build used as well as the found output behavior | required |
+| Output error behavior matches issue bug | log, comment body, issue description | output exists and output behavior matches the error in the issue description or honest if unable to reproduce backed by a record stating the output and hypothesis as to why that it doesn't match | required |
+| No vague references | log, comment body |  all references to specific files or commands must use a fully identifying reference (file names, commands, and command arguments)  in the reproducible steps  | required |
+| Adheres to disclosures | issue contribution policy, comment body |  if the repo or comments state a policy that specifically demands an explicit statement acknowledging AI use (naming the tool/extent), and the contributor doesn't include one, fail. If no explicit-acknowledgement requirement exists, the check passes. | required |
+| Generic claim comment | comment body | "claim comment is specific to this issue (not interchangeable) and makes no unverifiable completion guarantees | required |
+| No AI-isms | log, comment body |  if the comment doesn't include AI-isms, which includes em dashes, not x but y, rule of threes, and any leftover artifacts indicating the content was the result of a prompt. | preferred |
 
 ## Verdict rule
 
@@ -51,3 +56,7 @@ packages designed around that family.
 unclear is treated. Example shape (write your own): "accept if every
 required check passes; preferred checks never change the verdict;
 unclear counts as fail." -->
+
+Accept if every
+required check passes; preferred checks never change the verdict;
+unclear counts as fail.
