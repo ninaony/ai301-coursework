@@ -62,9 +62,7 @@ I built a scout which consisted of a search strategy. In running the additionall
 
 **Unit 6: [one line on the tool work]**
 
-[2-4 sentences: the voice-guard, the repo-memory file. What broke or
-fell short, and what changed because of it. "Nothing broke" counts when
-it is true - say how you know.]
+Nothing broke as my claim was pretty much one sentence and the design doc that was required by the issue description took up much of the space. Since it was a design doc, I had to be specific about files and where I was getting my information, and there was no AI contribution policy. My tool acknowledge went further and gave accurate warnings on the accuracy of my design, and they were actually helpful suggestions.
 
 **Unit 7: [one line on the tool work]**
 
@@ -79,17 +77,6 @@ drafted, what you did with the draft.]
 ---
 
 ## Why I Chose This Issue
-
-[1-2 paragraphs in your own words: how you searched, what your scan
-surfaced, what your scout's verdict said, why this issue fits your
-profile, and what you hope to learn. If your scout's verdict on it
-was reject and you chose it anyway, say so here and say why; choosing
-against your own tool silently is what loses points. Close with an
-honest read of the tool itself: where the scout fell short on a real
-wild search and what you changed or would change, or what convinced
-you it held up. **Record the link to your claim comment in this section too.**
-Not claimed yet? Write `claim pending` and today's date where the link goes,
-and add the link the moment your claim lands.]
 
 **Toolkit**
 
@@ -177,7 +164,7 @@ test, inside existing modules"},
 "verdict": "reject"
 }
 
-Claim commment link: No claim comment, becuase they had formatting rules in issue that basically only wanted comments claiming to include the proposal which is basically the plan since there's no issue to reproduce outside of setting up environment
+Claim commment link: https://github.com/oppia/oppia/issues/21970#issuecomment-6968321411
 
 - **Difficulties:** [where it fell short, or "none met" if none did]
   I think the rubric still feels short in terms of grading my interests. The candidate issue selection site, pools all the languages that the issue on its repo may contain, so the other two accepted issudes were included even though they're mostly written in Go. These were more of a style or preference check, so it performed correctly, but this was obviously more of a requirement for me.
