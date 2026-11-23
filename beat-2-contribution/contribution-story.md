@@ -518,6 +518,134 @@ Here are some of the small bumps enocuntered:
 
 **PR Description:**
 Draft:
+
+**PR title:** Fix part of #21970: Add StartExplorationEventLogEntry domain object
+
+---
+
+## Overview
+
+This PR does the following: it adds a domain object with a `validate()` method for `StartExplorationEventLogEntryModel`, following the plan approved by @iHamza14 on the issue (https://github.com/oppia/oppia/issues/21970#issuecomment-7050732096). Before this change, start events were saved with no validation of their values, and the storage model was used directly by the event handler.
+
+- Adds `StartExplorationEventLogEntry` and `StartExplorationEventLogEntryDict` to `core/domain/stats_domain.py`, with `to_dict()` and `validate()`. The object has no `id`, because the entity ID is generated when the model is saved. `validate()` checks that:
+  - `event_type` is the start exploration event type.
+  - `exploration_id` matches `constants.ENTITY_ID_REGEX`.
+  - `exploration_version` is an int that is at least 1 (booleans are rejected, since `bool` is a subclass of `int`).
+  - `state_name` is a string with a length between 1 and `constants.MAX_STATE_NAME_LENGTH`.
+  - `session_id` is a non-empty string.
+  - `client_time_spent_in_secs` is the float `0.0`.
+  - `params` is a dict with string keys and string values.
+  - `play_type` is `playtest` or `normal`. The `playtest` value is legacy but can still exist in stored events.
+  - `event_schema_version` is an int between 1 and `feconf.CURRENT_EVENT_MODELS_SCHEMA_VERSION` (booleans are rejected).
+- Adds `get_start_exploration_event_from_model()` to `core/domain/event_services.py`. `StartExplorationEventHandler._handle_event` now builds and validates the domain object before it creates the storage model, so invalid values are never stored. `StartExplorationEventLogEntryModel.create()` is unchanged.
+- Adds tests for every validation branch, `to_dict()`, the conversion function, and invalid input being rejected before anything is stored.
+
+### Deviations from the plan
+
+- **`state_name` uses a looser rule than my proposal.** My proposal said `utils.require_valid_name()`. This PR checks for a non-empty string within `constants.MAX_STATE_NAME_LENGTH` instead, because the existing test value `'state_name'` contains `_`, which is in `INVALID_NAME_CHARS` (`assets/constants.ts`), so `require_valid_name()` would reject it. The same rule was approved on the `CompleteExplorationEventLogEntryModel` plan on this issue.
+- **Changes from my proposal that the maintainer asked for:** the domain object has no `id`, `session_id` is only checked for being non-empty (not for length 24), `create()` and `unused_version` are left untouched, `to_dict()` and the TypedDict are included, and `params` is validated as `Dict[str, str]`.
+- **Test changed:** in `core/controllers/reader_test.py`, `test_starting_a_state` posted `params` with an int value (`{'test_param1': 1}`), which `Dict[str, str]` rejects, so both the request and the assertion now use a string value.
+
+### Things for reviewers to check
+
+- **Requests that the controller accepts can now fail validation.** The request schema in `core/controllers/reader.py` (`HANDLER_ARGS_SCHEMAS`, `params` and `session_id` and `state_name`) still accepts int `params` values and any string for `session_id` and `state_name`. A request with an int param value, an empty `session_id` or `state_name`, or a `state_name` longer than 50 characters now raises a `ValidationError` in `_handle_event` instead of being stored. I haven't checked how the controller turns that into a response, and I did not change the schema because it was outside the plan. Should the schema be tightened to match?
+- **`create()` is still called from `_handle_event`.** As in the plan, there is no separate save helper, so the storage model is referenced in `_handle_event` and in `get_start_exploration_event_from_model()`. I can add a save helper if you would prefer the model to be used only in get and save functions.
+- **Stored values for three fields still come from `create()`.** `create()` sets `event_type`, `client_time_spent_in_secs` and `event_schema_version` itself, so for new events the values validated on the domain object are the same constants that `create()` stores. Validating those fields is only meaningful when the object is built from a stored model.
+- **Existing tests still read the model with `get_all()`** (`event_services_test.py`, `reader_test.py`). I left them because the feedback did not ask to change them.
+
+### Before and after
+
+Gap checks, run from the repo root. Before is `develop`, after is this branch:
+
+| Check                                                                            | Before                                      | After                                                                                                         |
+| -------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `grep -n "^class .*Event" core/domain/stats_domain.py`                           | no output                                   | `208:class StartExplorationEventLogEntryDict(TypedDict):` and `2408:class StartExplorationEventLogEntry:`     |
+| `grep -n "validate" core/domain/event_services.py`                               | no output                                   | `271:        start_event_log_entry.validate()` (plus one comment line)                                        |
+| `git diff upstream/develop HEAD --stat -- core/storage/statistics/gae_models.py` | n/a                                         | no output, so `create()` is unchanged                                                                         |
+| Non-test uses of `StartExplorationEventLogEntryModel` outside `core/storage/`    | `event_services.py:240` (the `create` call) | `event_services.py:272` (the `create` call) and `event_services.py:466` (the type of the conversion function) |
+
+Tests, using the same command before and after (`test_before.txt` and `test_after.txt`):
+
+| Module                                    | Before     | After      |
+| ----------------------------------------- | ---------- | ---------- |
+| `core.domain.event_services_test`         | 20 passed  | 22 passed  |
+| `core.storage.statistics.gae_models_test` | 86 passed  | 86 passed  |
+| `core.controllers.reader_test`            | 112 passed | 112 passed |
+| Total                                     | 218 passed | 220 passed |
+
+The new `StartExplorationEventLogEntry` tests are in `core.domain.stats_domain_test`, which has 189 tests, and all of them pass.
+
+### Checks passing
+
+- Backend tests: all pass (see the proof section below).
+- Coverage: `core/domain/stats_domain.py` and `core/domain/event_services.py` are both at 100% line and branch coverage.
+- Mypy (`scripts.run_mypy_checks` on the changed files), Black, and Ruff import sorting pass.
+- The Oppia linter reports no errors in the changed files. Its only messages were CODEOWNERS warnings about untracked local files that are not part of this PR.
+
+### What AI helped with
+
+I used Claude on this PR. I traced how start events are created and saved, wrote the proposal on the issue, and decided how to apply the maintainer's feedback. Claude checked my proposal against the code, wrote the implementation and tests from my approved plan, and ran the formatter, type checks, linter and tests. It also helped me check which other tests call the handler (`user_services_test` and `stats_services_test`, which I ran and which pass).
+
+## Essential checklist
+
+- [x] I have referenced the issue(s) that this PR fixes or fixes part of on line 1 above. Once I open the PR, I will check that any issues this PR fully fixes are listed in the "Development" section of the sidebar.
+
+- [x] I have checked the "Files Changed" tab and confirmed that the changes are what I want to make.
+
+- [x] I have written tests for my code.
+
+- [x] The PR title starts with "Fix #bugnum: " or "Fix part of #bugnum: ...", followed by a short, clear summary of the changes.
+
+- [x] I have assigned the correct reviewers to this PR (or will leave a comment with the phrase "@{{reviewer_username}} PTAL" if I can't assign them directly).
+
+## Proof that changes are correct
+
+This PR has no user-facing changes. I ran the backend tests, using the same command before and after the change:
+
+```
+python -m scripts.run_backend_tests --skip_install --test_targets=core.domain.event_services_test,core.storage.statistics.gae_models_test,core.controllers.reader_test
+```
+
+Output after the change (from `test_after.txt`):
+
+```
+SUCCESS   core.domain.event_services_test: 22 tests (7.9 secs)
+SUCCESS   core.storage.statistics.gae_models_test: 86 tests (11.3 secs)
+SUCCESS   core.controllers.reader_test: 112 tests (113.7 secs)
+
+Ran 220 tests in 3 test classs.
+All tests passed.
+```
+
+For the new domain tests and the coverage of the two changed source files:
+
+```
+python -m scripts.run_backend_tests --skip_install --ignore_coverage --generate_coverage_report --test_targets=core.domain.stats_domain_test,core.domain.event_services_test
+coverage report -m --include=core/domain/stats_domain.py,core/domain/event_services.py
+```
+
+```
+SUCCESS   core.domain.stats_domain_test: 189 tests (29.8 secs)
+SUCCESS   core.domain.event_services_test: 22 tests (11.4 secs)
+
+Ran 211 tests in 2 test classs.
+All tests passed.
+
+Name                            Stmts   Miss Branch BrPart  Cover   Missing
+core/domain/event_services.py     136      0     22      0   100%
+core/domain/stats_domain.py       686      0    226      0   100%
+TOTAL                             822      0    248      0   100%
+```
+
+<!-- Attach a screenshot of the test_after.txt summary here before opening the PR. -->
+
+## PR Pointers
+
+- Never force push! If you do, your PR will be closed.
+- To reply to reviewers, follow these instructions: https://github.com/oppia/oppia/wiki/Rules-for-making-PRs#step-5-address-review-comments-until-all-reviewers-approve
+- Some acceptance tests are flaky, and can fail for reasons unrelated to your PR. We are working on fixing this, but in the meantime, if you need to restart the tests, please check the ["If your build fails" wiki page](https://github.com/oppia/oppia/wiki/If-CI-checks-fail-on-your-PR).
+- See the [Code Owner's wiki page](https://github.com/oppia/oppia/wiki/Oppia's-code-owners-and-checks-to-be-carried-out-by-developers) for what code owners will expect.
+
 **PR title:** Fix part of #21970: Add StartExplorationEventLogEntry domain object
 
 ---
